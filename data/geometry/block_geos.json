@@ -1,0 +1,23 @@
+{
+    "no-slope":     "no-slope.glb",
+    "slope-2-1":    "slope-2-1.glb",
+    "slope-2-2":    "slope-2-2.glb",
+    "slope-8-1":    "slope-8-1.glb",
+    "slope-8-2":    "slope-8-2.glb",
+    "slope-8-3":    "slope-8-3.glb",
+    "slope-8-4":    "slope-8-4.glb",
+    "slope-8-5":    "slope-8-5.glb",
+    "slope-8-6":    "slope-8-6.glb",
+    "slope-8-7":    "slope-8-7.glb",
+    "slope-8-8":    "slope-8-8.glb",
+    "slope":        "slope.glb",
+    "diagonal-l":   "diagonal-l.glb",
+    "diagonal-r":   "diagonal-r.glb",
+    "diagonal-3-l": "diagonal-3-l.glb",
+    "diagonal-3-r": "diagonal-3-r.glb",
+    "diagonal-4-l": "diagonal-4-l.glb",
+    "diagonal-4-r": "diagonal-4-r.glb",
+    "partial":      "partial.glb",
+    "partial-c":    "partial-c.glb",
+    "partial-cc":   "partial-cc.glb"
+}
