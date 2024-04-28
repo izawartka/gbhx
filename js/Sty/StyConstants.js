@@ -32,5 +32,6 @@ export const StyMaterials = [
 ];
 
 export const StyConstants = {
-    
+    STY_VERSION: 700,
+    STY_HEADER: "GBST"
 };
