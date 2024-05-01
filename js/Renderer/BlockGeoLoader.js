@@ -2,6 +2,7 @@ import * as THREE from 'three';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { BlockMeshConstants } from './BlockMeshConstants';
 import BlockGeoHelper from './BlockGeoHelper';
+import { Settings } from '../Constants';
 
 export default class BlockGeoLoader {
     static geos = {};
@@ -16,7 +17,7 @@ export default class BlockGeoLoader {
         if(BlockGeoLoader.geos[name] !== undefined) return;
         BlockGeoLoader.geos[name] = null;
 
-        const url = BlockMeshConstants.geosDirUrl+fileName;
+        const url = Settings.blockMeshes.geosDirUrl+fileName;
         const loader = new GLTFLoader();
         const gltf = await new Promise((resolve, reject) => {
             loader.load(url, resolve, undefined, reject);
@@ -83,7 +84,7 @@ export default class BlockGeoLoader {
     }
     
     static async loadAll() {
-        const blockGeos = await fetch(BlockMeshConstants.geosListUrl).then(res => res.json());
+        const blockGeos = await fetch(Settings.blockMeshes.geosListUrl).then(res => res.json());
 
         const geoPromises = Object.entries(blockGeos).map(([name, fileName]) => {
             return BlockGeoLoader.loadGeometry(name, fileName);
@@ -91,7 +92,7 @@ export default class BlockGeoLoader {
 
         await Promise.all(geoPromises);
 
-        const blocksVariants = await fetch(BlockMeshConstants.variantsListUrl).then(res => res.json());
+        const blocksVariants = await fetch(Settings.blockMeshes.variantsListUrl).then(res => res.json());
 
         const geoVariantsPromises = blocksVariants.map((variantInfo) => {
             return BlockGeoLoader.loadBlockVariant(variantInfo);

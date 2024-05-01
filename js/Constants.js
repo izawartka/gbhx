@@ -77,5 +77,14 @@ export const Settings = {
     exampleFiles: {
         gmpUrl: 'data/bil-uncompressed.gmp',
         styUrl: 'data/bil.sty'
-    }
+    },
+    blockMeshes: {
+        geosListUrl: './data/geometry/block_geos.json',
+        variantsListUrl: './data/geometry/block_variants.json',
+        geosDirUrl: './data/geometry/',
+    },
+    blockMaterials: {
+        wireframe: false,
+        lightingDimFactor: 1/16
+    },
 }

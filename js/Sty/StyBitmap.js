@@ -4,7 +4,7 @@ export default class StyBitmap {
     #height;
     vPalette;
 
-    cachedMaterials = null;
+    cachedMaterials = [];
 
     constructor(data, width, height, vPalette) {
         this.#data = data;
@@ -52,6 +52,6 @@ export default class StyBitmap {
             throw new Error("Bitmap data size doesn't match width*height");
         }
         this.#data = data;
-        this.cachedMaterials = null;
+        this.cachedMaterials.length = 0;
     }
 }

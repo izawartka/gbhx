@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { Settings } from './Constants';
 
 export default class StyleManager {
     sty;
@@ -7,47 +8,72 @@ export default class StyleManager {
         this.sty = sty;
     }
 
-    getTileMaterials(tileID) {
+    static getTileMaterialIndex(nonTransparent, lightingLevel) {
+        return lightingLevel * 2 + (nonTransparent ? 1 : 0);
+    }
+
+    getTileMaterial(tileID, nonTransparent = false, lightingLevel = 0) {
         const tile = this.sty.tiles[tileID];
         if(!tile) {
             console.warn(`Tile ${tileID} not found`);
             return null;
         }
 
-        if(!tile.bitmap.cachedMaterials) {
-            this.#cacheTileMaterials(tileID);
+        const index = StyleManager.getTileMaterialIndex(nonTransparent, lightingLevel);
+
+        if(!tile.bitmap.cachedMaterials[index]) {
+            return this.#cacheTileMaterial(tileID, nonTransparent, lightingLevel);
         }
 
-        return tile.bitmap.cachedMaterials;
+        return tile.bitmap.cachedMaterials[index];
     }
 
     #cacheEverything() {
         this.sty.getSpritesAsArray().forEach(sprite => {
-            this.#getMaterial(sprite.bitmap);
+            this.#getBaseMaterial(sprite.bitmap);
         });
 
         this.sty.tiles.forEach(tile => {
-            this.#getMaterial(tile.bitmap);
+            this.#getBaseMaterial(tile.bitmap);
         });
     }
 
-    #cacheTileMaterials(tileID) {
+    #cacheTileMaterial(tileID, nonTransparent, lightingLevel) {
         const tile = this.sty.tiles[tileID];
         if(!tile) {
             console.warn(`Tile ${tileID} not found`);
-            return;
+            return null;
         }
 
         // only for tiles' bitmaps:
-        // material 0 is the standard material, material 1 is the non-transparent material
-        const material = this.#getMaterial(tile.bitmap);
-        const ntMaterial = material.transparent ? material.clone() : material;
-        ntMaterial.transparent = false;
+        // every odd material is a non transparent version of the previous material
+        // every even material is more dimmed version of the previous material
+        const materials = tile.bitmap.cachedMaterials;
+        if(!materials[0]) {
+            materials[0] = this.#getBaseMaterial(tile.bitmap);
+        }
 
-        tile.bitmap.cachedMaterials = [material, ntMaterial];
+        const doClone = materials[0].transparent && nonTransparent || lightingLevel > 0;
+        const newMaterial = doClone ? materials[0].clone() : materials[0];
+
+        if(nonTransparent) {
+            newMaterial.transparent = false;
+        }
+
+        if(lightingLevel > 0) {
+            newMaterial.color.multiplyScalar(1 - lightingLevel * Settings.blockMaterials.lightingDimFactor);
+        }
+
+        const index = StyleManager.getTileMaterialIndex(nonTransparent, lightingLevel);
+        materials[index] = newMaterial;
+
+        /// delete this?
+        tile.bitmap.cachedMaterials = materials;
+
+        return newMaterial;
     }
 
-    #getMaterial(styBitmap, pPalette = null) {
+    #getBaseMaterial(styBitmap, pPalette = null) {
         const { imgData, isTransparent } = styBitmap.getImgData(pPalette);
 
         const texture = new THREE.DataTexture(
@@ -61,7 +87,7 @@ export default class StyleManager {
 
         const material = new THREE.MeshBasicMaterial({
             map: texture,
-            wireframe: false,
+            wireframe: Settings.blockMaterials.wireframe,
             transparent: isTransparent
         });
 

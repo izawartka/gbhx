@@ -16,18 +16,20 @@ export default class GmpReader {
 
         const blocks = this.#parseBlocks();
 
+        console.log('GMP loaded');
+
         return new Gmp(blocks);
     }
 
     #checkFileCorrect(data) {
         const header = Helper.readByteString(data, 0, 4);
         if(header != GmpConstants.GMP_HEADER) {
-            throw new Error("GMP parser: incorrect file header");
+            throw new Error('GMP parser: incorrect file header');
         }
 
         const fileVersion = new Uint16Array(data, 4, 1)[0];
         if(fileVersion != GmpConstants.GMP_VERSION) {
-            throw new Error("GMP parser: incorrect file version");
+            throw new Error('GMP parser: incorrect file version');
         }
     }
 

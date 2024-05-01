@@ -1,14 +1,14 @@
-import RiffParser from "../Parsers/RiffParser.js";
-import PagedContentParser from "../Parsers/PagedContentParser.js";
-import StyFont from "./StyFont.js";
-import StyPPalette from "./StyPPalette.js";
-import StySprite from "./StySprite.js";
-import StyTile from "./StyTile.js";
-import StyVPalette from "./StyVPalette.js";
-import { StyConstants, StyPaletteBases, StySpriteBases } from "./StyConstants.js";
-import StyCar from "./StyCar.js";
-import Sty from "./Sty.js";
-import Helper from "../Helper.js";
+import RiffParser from '../Parsers/RiffParser.js';
+import PagedContentParser from '../Parsers/PagedContentParser.js';
+import StyFont from './StyFont.js';
+import StyPPalette from './StyPPalette.js';
+import StySprite from './StySprite.js';
+import StyTile from './StyTile.js';
+import StyVPalette from './StyVPalette.js';
+import { StyConstants, StyPaletteBases, StySpriteBases } from './StyConstants.js';
+import StyCar from './StyCar.js';
+import Sty from './Sty.js';
+import Helper from '../Helper.js';
 
 export default class StyReader {
 
@@ -36,18 +36,20 @@ export default class StyReader {
         this.#parseCarDeltas(sprites);
         this.#parseRecycling(cars);
 
+        console.log('STY loaded');
+
         return new Sty(pPalettes, vPalettes, tiles, sprites, cars, fonts);
     }
 
     #checkFileCorrect(data) {
         const header = Helper.readByteString(data, 0, 4);
         if(header != StyConstants.STY_HEADER) {
-            throw new Error("STY parser: incorrect file header");
+            throw new Error('STY parser: incorrect file header');
         }
 
         const fileVersion = new Uint16Array(data, 4, 1)[0];
         if(fileVersion != StyConstants.STY_VERSION) {
-            throw new Error("STY parser: incorrect file version");
+            throw new Error('STY parser: incorrect file version');
         }
     }
 

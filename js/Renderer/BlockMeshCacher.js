@@ -39,14 +39,12 @@ export default class BlockMeshCacher {
         const tileID = sidesInfo[sideName]?.tileID;
         if(!tileID) return null;
 
-        const materials = styleManager.getTileMaterials(tileID);
-        if(!materials) return null;
         const isFlat = sidesInfo[sideName].flat || sidesInfo[sideName].flatRev;
-        const material = materials[isFlat ? 0 : 1];
+        const lightingLevel = sidesInfo[sideName].lighting ?? 0;
+        const material = styleManager.getTileMaterial(tileID, !isFlat, lightingLevel);
+        if(!material) return null;
 
         const rotationFactor = sidesInfo[sideName].rotation;
-        //const absRotationFactor = rotationFactor + sideGeo.rotation;
-
         const geometryIndex = (rotationFactor * 3) + (sidesInfo[sideName].flip ? 1 : 0);
         const geometry = sideGeo[geometryIndex];
         
