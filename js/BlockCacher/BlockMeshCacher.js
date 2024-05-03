@@ -1,56 +1,67 @@
 import * as THREE from 'three';
 import BlockGeoLoader from './BlockGeoLoader.js';
 import { BlockMeshRotSides, BlockMeshConstants } from './BlockMeshConstants.js';
+import * as BufferGeometryUtils from 'three/addons/utils/BufferGeometryUtils.js';
 
 export default class BlockMeshCacher {
-    static async cacheMeshes(blockInfo, styleManager) {
+    static async cacheMesh(blockInfo, styleManager) {
         if(blockInfo.cachedMesh) return blockInfo.cachedMesh;
         blockInfo.cachedMesh = null;
 
-        const meshes = await BlockMeshCacher.getMeshes(blockInfo, styleManager);
-        if(meshes.length == 0) return null;
-
-        blockInfo.cachedMeshes = meshes;
-        return meshes;
+        const mesh = await BlockMeshCacher.getMesh(blockInfo, styleManager);
+        blockInfo.cachedMesh = mesh;
+        return mesh;
     }
 
-    static async getMeshes(blockInfo, styleManager) {
+    static async getMesh(blockInfo, styleManager) {
         const blockVariant = blockInfo.slope + (blockInfo.lid?.tileID == 1023 ? 64 : 0);
         const blockGeos = await BlockGeoLoader.getBlockGeosVariant(blockVariant);
         if(!blockGeos || !blockGeos.geometries) return [];
         const sidesInfo = BlockMeshCacher.getSidesInfo(blockInfo);
         const position = new THREE.Vector3(blockInfo.x, blockInfo.z, blockInfo.y);
 
-        const meshes = [];
+        const geometries = [];
+        const materials = [];
 
         for(const [sideName, sideGeo] of Object.entries(blockGeos.geometries)) {
-            const sideMesh = await BlockMeshCacher.getSideMesh(sideName, sideGeo, sidesInfo, styleManager);
-            if(!sideMesh) continue;
+            const material = await BlockMeshCacher.getSideMaterial(sideName, sidesInfo, styleManager);
+            if(!material) continue;
+            const geometry = await BlockMeshCacher.getSideGeometry(sideName, sideGeo, sidesInfo);
+            if(!geometry) continue;
 
-            sideMesh.position.copy(position);
-            sideMesh.rotation.y = blockGeos.rotation * Math.PI / 2;
-            meshes.push(sideMesh);
+            geometries.push(geometry);
+            materials.push(material);
         }
 
-        return meshes;
+        if(geometries.length == 0) return null;
+
+        const combinedGeometry = new BufferGeometryUtils.mergeGeometries(geometries,true);
+        //const combinedGeometry = new THREE.BoxGeometry(0.5, 0.5, 0.5);
+        const mesh = new THREE.Mesh(combinedGeometry, materials);
+
+        mesh.position.copy(position);
+        mesh.rotation.y = blockGeos.rotation * Math.PI / 2;
+
+        return mesh;
     }
 
-    static async getSideMesh(sideName, sideGeo, sidesInfo, styleManager) {
+    static async getSideGeometry(sideName, sideGeo, sidesInfo) {
+        const rotationFactor = sidesInfo[sideName].rotation;
+        const geometryIndex = (rotationFactor * 3) + (sidesInfo[sideName].flip ? 1 : 0);
+        const geometry = sideGeo[geometryIndex];
+
+        return geometry;
+    }
+
+    static async getSideMaterial(sideName, sidesInfo, styleManager) {
         const tileID = sidesInfo[sideName]?.tileID;
         if(!tileID) return null;
 
         const isFlat = sidesInfo[sideName].flat || sidesInfo[sideName].flatRev;
         const lightingLevel = sidesInfo[sideName].lighting ?? 0;
         const material = styleManager.getTileMaterial(tileID, !isFlat, lightingLevel);
-        if(!material) return null;
 
-        const rotationFactor = sidesInfo[sideName].rotation;
-        const geometryIndex = (rotationFactor * 3) + (sidesInfo[sideName].flip ? 1 : 0);
-        const geometry = sideGeo[geometryIndex];
-        
-        const outMesh = new THREE.Mesh(geometry, material);
-        
-        return outMesh;
+        return material;
     }
 
     static getSidesInfo(block) {

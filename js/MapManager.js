@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { GmpBlockType } from './Gmp/GmpConstants.js';
-import BlockMeshCacher from './Renderer/BlockMeshCacher.js';
+import BlockMeshCacher from './BlockCacher/BlockMeshCacher.js';
 
 export default class MapManager {
     gmp;
@@ -44,6 +44,6 @@ export default class MapManager {
     async #cacheBlockMesh(block) {
         if(MapManager.#isBlockEmpty(block)) return;
 
-        await BlockMeshCacher.cacheMeshes(block, this.styleManager);
+        await BlockMeshCacher.cacheMesh(block, this.styleManager);
     }
 }

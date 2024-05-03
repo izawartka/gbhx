@@ -1,39 +1,34 @@
 import { Settings } from "./Constants.js";
 import Game from "./Game.js";
-import Renderer from "./Renderer/Renderer.js";
+import Renderer from "./Renderer.js";
 
 export default class Main {
-    game;
-    renderer;
+    static game;
 
-    constructor() {
+    static {
         this.game = new Game();
-        this.renderer = new Renderer(this.game);
+        this.loadExampleFiles();
     }
 
-    async loadExampleFiles() {
+    static async loadExampleFiles() {
         await this.loadStyFromUrl(Settings.exampleFiles.styUrl);
         await this.loadGmpFromUrl(Settings.exampleFiles.gmpUrl);
-        await this.renderer.loadBlocks();
+        await Renderer.reloadMap();
     }
 
-    async loadStyFromUrl(url) {
+    static async loadStyFromUrl(url) {
         return fetch(url)
             .then(response => response.arrayBuffer())
             .then(buffer => {
-                this.game.loadSty(buffer);
+                this.game?.loadSty(buffer);
             });
     }
 
-    async loadGmpFromUrl(url) {
+    static async loadGmpFromUrl(url) {
         return fetch(url)
             .then(response => response.arrayBuffer())
             .then(buffer => {
-                this.game.loadGmp(buffer);
+                this.game?.loadGmp(buffer);
             });
     }
 }
-
-const main = new Main();
-main.loadExampleFiles();
-console.log(main);

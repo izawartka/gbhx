@@ -87,4 +87,7 @@ export const Settings = {
         wireframe: false,
         lightingDimFactor: 1/16
     },
+    ui: {
+        rootElementID: 'ui',
+    }
 }

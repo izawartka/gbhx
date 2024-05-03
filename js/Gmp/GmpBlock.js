@@ -11,7 +11,7 @@ export default class GmpBlock {
     #slope;
     #x; #y; #z;
 
-    cachedMeshes = null;
+    cachedMesh = null;
 
     constructor(
         x, y, z,
@@ -48,11 +48,11 @@ export default class GmpBlock {
     get type() { return this.#type; }
     get slope() { return this.#slope; }
 
-    set left(value) { this.#left = value; this.cachedMeshes = null; }
-    set right(value) { this.#right = value; this.cachedMeshes = null; }
-    set top(value) { this.#top = value; this.cachedMeshes = null; }
-    set bottom(value) { this.#bottom = value; this.cachedMeshes = null; }
-    set lid(value) { this.#lid = value; this.cachedMeshes = null; }
-    set type(value) { this.#type = value; this.cachedMeshes = null; }
-    set slope(value) { this.#slope = value; this.cachedMeshes = null; }
+    set left(value) { this.#left = value; this.cachedMesh = null; }
+    set right(value) { this.#right = value; this.cachedMesh = null; }
+    set top(value) { this.#top = value; this.cachedMesh = null; }
+    set bottom(value) { this.#bottom = value; this.cachedMesh = null; }
+    set lid(value) { this.#lid = value; this.cachedMesh = null; }
+    set type(value) { this.#type = value; this.cachedMesh = null; }
+    set slope(value) { this.#slope = value; this.cachedMesh = null; }
 }
