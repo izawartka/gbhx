@@ -1,7 +1,7 @@
 # GBHX
 
 ## About
-Web-based GTA2 level viewer (.gmp) written from scratch using THREE.js and with the help of code from my previous project - gta2-sty-viewer-js). It supports all types of slopes and texture filters from the original game and maybe one day will become its backward compatible clone.
+Web-based GTA2 level viewer (.gmp) written from scratch using THREE.js and with the help of code from my previous project - [gta2-sty-viewer-js](https://github.com/izawartka/gta2-sty-viewer-js). It supports all types of slopes and texture filters from the original game and maybe one day will become its backward compatible clone.
 
 ## To do
 - Support for compressed maps
